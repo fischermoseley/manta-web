@@ -21,6 +21,7 @@ async function write(addr, data) {
         // Format the data to be sent
         const sendData = `W${addr.toString(16).padStart(4, '0')}${data.toString(16).padStart(4, '0')}\r\n`;
 
+        console.log(port);
         // Example: Sending data to the device
         const writer = port.writable.getWriter();
         await writer.write(new TextEncoder().encode(sendData));
@@ -48,7 +49,10 @@ async function read(addr) {
         console.log('Sent:', readCmd);
 
         // Read back the response
-        const { value, done } = await port.readable.getReader().read();
+        const reader = port.readable.getReader(); // Create a new reader
+        const { value, done } = await reader.read(); // Read from the stream
+        reader.releaseLock(); // Release the reader's lock
+
         if (!done) {
             const responseData = new TextDecoder().decode(value);
             console.log('Received:', responseData);
@@ -59,19 +63,28 @@ async function read(addr) {
     }
 }
 
-async function set_probe() {
+
+async function set_probe(addr, value) {
     try {
         await write(0, 0);
-        await write(2, 1);
+        await write(addr, value);
         await write(0, 1);
         await write(0, 0);
-
-        const result = await read(1);
-        console.log('Result of read:', result); // Log the result to the console
     } catch (error) {
         console.error('Error in set_probe:', error);
     }
 }
 
+async function get_probe(addr) {
+    try {
+        await write(0, 0);
+        await write(0, 1);
+        await write(0, 0);
+        return await read(addr);
+    } catch (error) {
+        console.error('Error in set_probe:', error);
+    }
+}
+
+
 document.getElementById('connectButton').addEventListener('click', connect);
-document.getElementById('writeButton').addEventListener('click', set_probe);

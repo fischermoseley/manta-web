@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Serial API</title>
-</head>
-<body>
-    <h1>Web Serial API Example</h1>
-    <button id="connectButton">Connect</button>
-    <button id="writeButton">Write</button>
-    <p>Received data: <span id="receivedData"></span></p>
-    <script src="serial.js"></script>
-</body>
+<!doctype html>
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    </head>
+    <body>
+        <button class="md-button" id="connectButton">Connect</button>
+        <input type="file" id="fileInput" accept=".yaml,.yml">
+        <script src="js/upload.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/serial.js"></script>
+    </body>
 </html>
