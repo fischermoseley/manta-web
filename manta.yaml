@@ -10,7 +10,7 @@ cores:
       LED3: 1
       LED4: 1
 
-uart:
+webserial:
   port: "/dev/ttyUSB3"
   baudrate: 115200
   clock_freq: 12000000

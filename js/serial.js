@@ -21,7 +21,6 @@ async function write(addr, data) {
         // Format the data to be sent
         const sendData = `W${addr.toString(16).padStart(4, '0')}${data.toString(16).padStart(4, '0')}\r\n`;
 
-        console.log(port);
         // Example: Sending data to the device
         const writer = port.writable.getWriter();
         await writer.write(new TextEncoder().encode(sendData));
