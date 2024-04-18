@@ -16,8 +16,8 @@ addEventListener('message', function(e) {
   postMessage({awaitingInput: false, output: output})
 });
 
-function readSerial(nBytes) {
-  console.log("(Web Worker): readSerial called with: ", nBytes);
+function workerReadSerial(nBytes) {
+  console.log("(Web Worker): workerReadSerial called with: ", nBytes);
   postMessage({awaitingInput: true, nBytes: nBytes});
   const request = new XMLHttpRequest();
 
@@ -28,3 +28,14 @@ function readSerial(nBytes) {
   return request.responseText;
 }
 
+function workerWriteSerial(data) {
+  console.log("(Web Worker): workerWriteSerial called with: ", data);
+  postMessage({awaitingInput: true, data: data});
+  const request = new XMLHttpRequest();
+
+  // `false` makes the request synchronous
+  request.open('GET', '/write_serial/', false);
+  request.send(null);
+  console.log('status', request.status);
+  return request.responseText;
+}

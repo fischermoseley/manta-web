@@ -16,7 +16,7 @@ addEventListener('message', event => {
 addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   console.log("(Service Worker): Got fetch to: ", u);
-  if (u.pathname === '/read_serial/') {
+  if (u.pathname === '/read_serial/' || u.pathname === '/write_serial/') {
     e.respondWith(new Promise(r => resolver = r));
   }
 });
