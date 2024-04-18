@@ -40,15 +40,18 @@ navigator.serviceWorker.register('/service-worker.js').then(function(registratio
   }
 });
 
+// main loop
+let awaitingRead = false;
+let awaitingWrite = false;
+let writeData;
+
 const worker = new Worker('/web-worker.js');
 worker.onmessage = function(e) {
-  console.log("(Main) received message from web worker: ", e.data)
-  const result = e.data;
-  awaitingInput = result.awaitingInput;
+  console.log("(Main) received message from web worker: ", e.data);
+  if ("awaitingRead" in e.data) {awaitingRead = e.data.awaitingRead};
+  if ("awaitingWrite" in e.data) {awaitingWrite = e.data.awaitingWrite};
+  if ("writeData" in e.data) {writeData = e.data.writeData};
 };
-
-// main loop
-let awaitingInput = false;
 
 async function capture() {
     console.log("(Main): Sending message to Web Worker: ", "");
@@ -56,11 +59,16 @@ async function capture() {
 }
 
 async function checkForAwaitingInput() {
-  if (awaitingInput) {
-    await write("R0000\r\n");
-    bytes_in = await read(1);
-    console.log("(Main): Sending message to Service Worker: ", bytes_in);
-    serviceWorker.postMessage(bytes_in);
+  if (awaitingRead) {
+    let out = await read();
+    console.log("(Main): Sending message to Service Worker: ", out);
+    serviceWorker.postMessage(out);
+  }
+
+  if (awaitingWrite) {
+    let out = await write(writeData);
+    console.log("(Main): Sending message to Service Worker: ", out);
+    serviceWorker.postMessage(out);
   }
 }
 
