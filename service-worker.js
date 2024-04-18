@@ -6,14 +6,17 @@ addEventListener('activate', () => {
 });
 
 let resolver;
+console.log("(Service Worker): Loaded!");
 
 addEventListener('message', event => {
   resolver(new Response(event.data,{status:200}));
+  console.log("(Service Worker): fufilling fetch, sending: ", event.data);
 });
 
 addEventListener('fetch', e => {
   const u = new URL(e.request.url);
-  if (u.pathname === '/get_input/') {
+  console.log("(Service Worker): Got fetch to: ", u);
+  if (u.pathname === '/read_serial/') {
     e.respondWith(new Promise(r => resolver = r));
   }
 });
