@@ -55,14 +55,17 @@ async function read() {
 let awaitingInput = false;
 
 async function run() {
+    console.log("(Main): Sending message to Web Worker: ", code.value);
+    worker.postMessage(code.value);
+}
+
+async function checkForAwaitingInput() {
   if (awaitingInput) {
     await write("R0000\r\n");
     bytes_in = await read(1);
     console.log("(Main): Sending message to Service Worker: ", bytes_in);
     serviceWorker.postMessage(bytes_in);
-  } else {
-    console.log("(Main): Sending message to Web Worker: ", code.value);
-    worker.postMessage(code.value);
   }
 }
 
+setInterval(checkForAwaitingInput, 100);
