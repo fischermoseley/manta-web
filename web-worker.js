@@ -4,6 +4,11 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js");
 
 (async function() {
   pyodide = await loadPyodide({ indexURL : "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/" });
+    await pyodide.loadPackage("micropip");
+    await pyodide.loadPackage("setuptools");
+    const micropip = pyodide.pyimport("micropip");
+    await micropip.install('manta-1.0.0-py3-none-any.whl');
+
     const response = await fetch('/main.py');
     pyodide.runPython(await response.text());
     console.log("(Web Worker) Python loaded!");

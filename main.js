@@ -72,4 +72,4 @@ async function checkForAwaitingInput() {
   }
 }
 
-setInterval(checkForAwaitingInput, 100);
+setInterval(checkForAwaitingInput, 10);
