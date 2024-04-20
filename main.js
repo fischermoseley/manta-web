@@ -74,7 +74,7 @@ async function checkForAwaitingInput() {
   }
 }
 
-setInterval(checkForAwaitingInput, 10);
+setInterval(checkForAwaitingInput, 50);
 
 function download() {
   const blob = new Blob([vcdFile], { type: 'text/plain' });
