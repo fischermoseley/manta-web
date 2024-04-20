@@ -101,8 +101,7 @@ function view() {
   const iframe = document.createElement('iframe');
   iframe.style.width = '100%';
   iframe.style.height = '500px';
-  // iframe.src = `https://app.surfer-project.org/?load_url=${encodeURIComponent(url)}&startup_commands=module_add%20manta;toggle_menu`;
-  iframe.src = `https://app.surfer-project.org/?load_url=http://localhost:8000/capture.vcd&startup_commands=module_add%20manta;toggle_menu`;
+  iframe.src = `surfer/index.html?load_url=${encodeURIComponent(url)}&startup_commands=module_add%20manta;toggle_menu`;
 
   // Append the iframe to the document body
   document.body.appendChild(iframe);
