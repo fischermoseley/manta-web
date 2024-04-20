@@ -44,6 +44,7 @@ navigator.serviceWorker.register('/service-worker.js').then(function(registratio
 let awaitingRead = false;
 let awaitingWrite = false;
 let writeData;
+let vcdFile;
 
 const worker = new Worker('/web-worker.js');
 worker.onmessage = function(e) {
@@ -51,6 +52,7 @@ worker.onmessage = function(e) {
   if ("awaitingRead" in e.data) {awaitingRead = e.data.awaitingRead};
   if ("awaitingWrite" in e.data) {awaitingWrite = e.data.awaitingWrite};
   if ("writeData" in e.data) {writeData = e.data.writeData};
+  if ("vcdFile" in e.data) {vcdFile = e.data.vcdFile};
 };
 
 async function capture() {
@@ -73,3 +75,38 @@ async function checkForAwaitingInput() {
 }
 
 setInterval(checkForAwaitingInput, 10);
+
+function download() {
+  const blob = new Blob([vcdFile], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  // Create a link element to download the file
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'capture.vcd';
+
+  // Append the link to the document body and trigger the download
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up by revoking the Blob URL
+  URL.revokeObjectURL(url);
+}
+
+function view() {
+  const blob = new Blob([vcdFile], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  // Create the iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.width = '100%';
+  iframe.style.height = '500px';
+  // iframe.src = `https://app.surfer-project.org/?load_url=${encodeURIComponent(url)}&startup_commands=module_add%20manta;toggle_menu`;
+  iframe.src = `https://app.surfer-project.org/?load_url=http://localhost:8000/capture.vcd&startup_commands=module_add%20manta;toggle_menu`;
+
+  // Append the iframe to the document body
+  document.body.appendChild(iframe);
+
+  // Clean up by revoking the Blob URL
+  // URL.revokeObjectURL(url);
+}

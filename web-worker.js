@@ -16,7 +16,9 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js");
 
 addEventListener('message', function(e) {
   console.log("(Web Worker): Message received from main thread: ", e.data);
-  const output = pyodide.globals.get("capture")(e.data);
+  const vcdFile = pyodide.globals.get("capture")(e.data);
+  console.log("(Web Worker): Got output from capture: ", vcdFile);
+  postMessage({vcdFile: vcdFile});
 });
 
 function blockingRequestToURL(url) {
