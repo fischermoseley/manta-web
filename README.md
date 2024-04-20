@@ -1,6 +1,8 @@
 ## manta-web
 
-This demo works by bringing together a few technologies:
+This repo contains the source for a static site that runs Manta in the user's browser. Everything is written in client-side Javascript, no user data is sent to any other machine.
+
+This works by bringing together a few technologies:
 - [Pyodide](https://github.com/pyodide/pyodide), a Python environment that runs in the browswer via a version of the Python interpreter compiled for WebAssembly.
 - The [Web Serial API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API), which allows the browswer to communicate with serial ports on the host machine.
 - [Surfer](https://surfer-project.org/), a cross-platform waveform viewer written in Rust which has been compiled for WebAssembly.
