@@ -7,7 +7,7 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js");
     await pyodide.loadPackage("micropip");
     await pyodide.loadPackage("setuptools");
     const micropip = pyodide.pyimport("micropip");
-    await micropip.install('manta-1.0.0-py3-none-any.whl');
+    await micropip.install('manta_fpga-1.1.0-py3-none-any.whl');
 
     const response = await fetch('/main.py');
     pyodide.runPython(await response.text());
