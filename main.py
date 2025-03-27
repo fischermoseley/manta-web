@@ -1,31 +1,13 @@
 from manta.cli import version
 from manta import Manta
+import yaml
 
-config = {
-  "uart": {
-    "baudrate": 115200,
-    "port": "/dev/ttyUSB3",
-    "clock_freq": 12000000,
-    "stall_interval": 8,
-  },
-  "cores": {
-    "my_logic_analyzer": {
-      "type": "logic_analyzer",
-      "probes": {
-        "probe0": 1,
-        "probe1": 4,
-        "probe2": 8
-      },
-      "sample_depth": 128,
-      "trigger_mode": "single_shot",
-      "triggers": [
-        "probe2 EQ 3"
-      ],
-    }
-  }
-}
+manta = None
 
-manta = Manta.from_config_dict(config)
+def load_config_file(yaml_string):
+  config = yaml.safe_load(yaml_string)
+  global manta
+  manta = Manta.from_config_dict(config)
 
 def capture(foo):
     print(f"(Python): capture() has been called with args: {foo}")

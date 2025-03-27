@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <body>
+  <p id="pythonStatusText">Python: Uninitialized </p>
+  <p id="serialPortStatusText">Serial Port: Unconnected</p>
+  <input type="file" id="configFileInput" accept=".yaml,.yml" onchange="uploadConfigFile()">
+
   <button onclick='connect()'>Connect</button>
   <button onclick='capture()'>Capture</button>
   <button onclick='download()'>Download</button>

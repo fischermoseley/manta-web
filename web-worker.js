@@ -3,22 +3,38 @@ let pyodide;
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js");
 
 (async function() {
+  postMessage({pythonStatusText: "Python Status: Loading Pyodide"});
   pyodide = await loadPyodide({ indexURL : "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/" });
-    await pyodide.loadPackage("micropip");
-    await pyodide.loadPackage("setuptools");
-    const micropip = pyodide.pyimport("micropip");
-    await micropip.install('manta_fpga-1.1.0-py3-none-any.whl');
 
-    const response = await fetch('/main.py');
-    pyodide.runPython(await response.text());
-    console.log("(Web Worker) Python loaded!");
+  postMessage({pythonStatusText: "Python Status: Loading micropip"});
+  await pyodide.loadPackage("micropip");
+
+  postMessage({pythonStatusText: "Python Status: Loading setuptools"});
+  await pyodide.loadPackage("setuptools");
+
+  postMessage({pythonStatusText: "Python Status: Loading manta-fpga"});
+  const micropip = pyodide.pyimport("micropip");
+  await micropip.install('manta_fpga-1.1.0-py3-none-any.whl');
+
+  const response = await fetch('/main.py');
+  pyodide.runPython(await response.text());
+
+  postMessage({pythonStatusText: "Python Status: Loaded"});
 })()
 
 addEventListener('message', function(e) {
   console.log("(Web Worker): Message received from main thread: ", e.data);
-  const vcdFile = pyodide.globals.get("capture")(e.data);
-  console.log("(Web Worker): Got output from capture: ", vcdFile);
-  postMessage({vcdFile: vcdFile});
+
+  if ("capture" in e.data) {
+    const vcdFile = pyodide.globals.get("capture")(e.data);
+    console.log("(Web Worker): Got output from capture: ", vcdFile);
+    postMessage({vcdFile: vcdFile});
+  }
+
+  if ("configFile" in e.data) {
+    console.log("(Web Worker): Got configFile: ", e.data);
+    pyodide.globals.get("load_config_file")(e.data.configFile);
+  }
 });
 
 function blockingRequestToURL(url) {

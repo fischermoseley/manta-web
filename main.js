@@ -6,8 +6,9 @@ async function connect() {
         const serialPort = await navigator.serial.requestPort();
         await serialPort.open({ baudRate: 115200 });
         port = serialPort;
-        console.log('Connected to serial device:', port);
+        document.getElementById('serialPortStatusText').innerText = "Serial Port: Connected";
     } catch (error) {
+        document.getElementById('serialPortStatusText').innerText = ("Serial Port: Error", error);
         console.error('Error connecting to serial device:', error);
     }
 }
@@ -45,6 +46,7 @@ let awaitingRead = false;
 let awaitingWrite = false;
 let writeData;
 let vcdFile;
+let configFile;
 
 const worker = new Worker('/web-worker.js');
 worker.onmessage = function(e) {
@@ -53,11 +55,12 @@ worker.onmessage = function(e) {
   if ("awaitingWrite" in e.data) {awaitingWrite = e.data.awaitingWrite};
   if ("writeData" in e.data) {writeData = e.data.writeData};
   if ("vcdFile" in e.data) {vcdFile = e.data.vcdFile};
+  if ("pythonStatusText" in e.data) {document.getElementById('pythonStatusText').innerText = e.data.pythonStatusText};
 };
 
 async function capture() {
     console.log("(Main): Sending message to Web Worker: ", "");
-    worker.postMessage("");
+    worker.postMessage({"capture": ""});
 }
 
 async function checkForAwaitingInput() {
@@ -75,6 +78,22 @@ async function checkForAwaitingInput() {
 }
 
 setInterval(checkForAwaitingInput, 50);
+
+function uploadConfigFile() {
+  const fileInput = document.getElementById('configFileInput');
+  const file = fileInput.files[0];
+  let yamlContent;
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      worker.postMessage({"configFile": e.target.result});
+    };
+
+    reader.readAsText(file);
+  }
+}
 
 function download() {
   const blob = new Blob([vcdFile], { type: 'text/plain' });
